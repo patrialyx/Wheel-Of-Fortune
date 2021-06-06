@@ -1,4 +1,4 @@
-# Patria Lim Yun Xuan, U1921783K
+
 #######################################################################################################################
 #                                                 IMPORTED MODULES                                                    #
 #######################################################################################################################
@@ -186,14 +186,7 @@ def search_by_keyword(keywords):
     # special input 'mm' allows user to exit to main menu anytime
     while keywords != 'mm':
 
-        # While the split() function only takes in one input, re.findall function filters out all special characters,
-        # except underscore. This allows users to enter keywords delimited by any special character.
-        # i.e. 'chicken$#%^&*spicy!'
-        # however, it does trade off on speed for higher flexibility
-        # set removes duplicates
         keyword_input_set = set(re.findall(r'\w+', keywords))
-
-        # checks for misspelled words and conducts the search using similar words
         misspelled = SpellChecker().unknown(list(keyword_input_set))
 
         for word in misspelled:
@@ -207,11 +200,9 @@ def search_by_keyword(keywords):
         lst_of_strings = []
 
         for keyword in keyword_input_set:
-            # counter determines if the keyword is present in the database
             counter = 0
             for canteen_name, stall_dictionary in canteen_stall_keywords.items():
                 for stall_name, stall_attributes in stall_dictionary.items():
-                    # converts all keywords to lowercase to make search case-insensitive
                     stall_attributes_list = stall_attributes.lower().split(', ')
                     if keyword.lower() in stall_attributes_list:
                         lst_of_strings.append(canteen_name + ' - ' + stall_name)
@@ -240,23 +231,19 @@ def search_by_price(keywords):
     lst_of_sets = search_by_keyword(keywords)
     sorted_lst_of_lsts = []
 
-    # reversed: for foodstuff to be arranged such that most matched keywords display first
     for n in reversed(range(len(lst_of_sets))):
-        # assigned price '0' so that when sorted, the title remains at the top of the list always
         lst = [['\n%d canteen(s) match %d keyword(s):' % ((len(lst_of_sets[n])), n + 1), '', 0]]
 
-        for canteen_and_stall in lst_of_sets[n]:  # "lst_of_sets[n]" is a set, "canteen_and_stall" is a string
+        for canteen_and_stall in lst_of_sets[n]:  
             canteen_stall_list = canteen_and_stall.split(' - ')
             stall_price = canteen_stall_prices[canteen_stall_list[0]][canteen_stall_list[1]]
             canteen_stall_list.append(stall_price)
             lst.append(canteen_stall_list)
 
-        # sorts list according to price
         sorted_lst = sorted(lst, key=lambda x: x[2])
         sorted_lst_of_lsts.append(sorted_lst)
 
     for lst in sorted_lst_of_lsts:
-        # prints and removes title 'Number of matching keywords: n' from list
         print((lst.pop(0))[0])
 
         for canteen_stall_price in lst:
